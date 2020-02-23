@@ -29,8 +29,8 @@ class Initializations:
             while len(centroids) < estimator._n_clusters:
                 kdtree = KDTree(np.array(centroids), metric=metric)  # sklearn's KDTree doesn't take lists
                 distances, cluster = kdtree.query(X)
-                centroids.append(random.choices(X, weights=distances ** 2))
-            return centroids
+                centroids.append(random.choices(X, weights=distances ** 2)[0])
+            return np.array(centroids)
 
         return func
 

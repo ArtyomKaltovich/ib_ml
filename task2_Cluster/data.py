@@ -1,11 +1,5 @@
-from sklearn.neighbors import KDTree
-from sklearn.datasets import make_blobs, make_moons, make_swiss_roll
-import numpy as np
-import random
 import matplotlib.pyplot as plt
-import matplotlib
-import copy
-from collections import deque
+import numpy as np
 
 
 def visualize_clasters(X, labels):
