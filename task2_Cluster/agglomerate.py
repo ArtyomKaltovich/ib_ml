@@ -1,6 +1,6 @@
 import heapq
 import itertools
-from functools import partial
+from functools import partial, update_wrapper
 
 import numpy as np
 
@@ -9,15 +9,24 @@ from sklearn.neighbors._kd_tree import KDTree
 
 
 def average():
-    return np.mean
+    def func(*elems):  # create new function to save np.mean data
+        return np.mean(*elems)
+    update_wrapper(func, average)
+    return func
 
 
 def single():
-    return min
+    def func(*elems):  # create new function, because min is unwrapable
+        return min(*elems)
+    update_wrapper(func, single)
+    return func
 
 
 def complete():
-    return max
+    def func(*elems):
+        return max(*elems)
+    update_wrapper(func, complete)
+    return func
 
 
 class AgglomertiveClustering:

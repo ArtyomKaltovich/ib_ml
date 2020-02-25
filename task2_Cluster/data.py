@@ -2,13 +2,16 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 
-def visualize_clasters(X, labels):
+def visualize_clasters(X, labels, file_path=None):
     unique_labels = np.arange(labels.max() + 1)
     unique_colors = np.random.random((len(unique_labels), 3))
     colors = [unique_colors[l] for l in labels]
     plt.figure(figsize=(9, 9))
     plt.scatter(X[:, 0], X[:, 1], c=colors)
-    plt.show()
+    if file_path:
+        plt.savefig(file_path)
+    else:
+        plt.show()
 
 
 def clusters_statistics(flatten_image, cluster_colors, cluster_labels):

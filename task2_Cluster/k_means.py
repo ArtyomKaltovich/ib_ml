@@ -1,5 +1,5 @@
 import random
-from functools import partial
+from functools import partial, update_wrapper
 
 import numpy as np
 from sklearn.neighbors import KDTree
@@ -12,6 +12,8 @@ class Initializations:
             random_vector = partial(np.random.uniform, start, finish, size=X.shape[1])
             centroids2 = np.array([random_vector() for _ in range(estimator._n_clusters)])
             return centroids2
+
+        update_wrapper(func, Initializations.random)
         return func
 
     @staticmethod
@@ -20,6 +22,8 @@ class Initializations:
             centroids2 = np.array(random.sample(list(range(len(X))), k=estimator._n_clusters))  # select indexes
             centroids2 = X[centroids2]
             return centroids2
+
+        update_wrapper(func, Initializations.sample)
         return func
 
     @staticmethod
@@ -32,6 +36,8 @@ class Initializations:
                 centroids.append(random.choices(X, weights=distances ** 2)[0])
             return np.array(centroids)
 
+        update_wrapper(func, Initializations.kmeans_plus_plus)
+        func.__name__ += f"_{metric}"
         return func
 
 

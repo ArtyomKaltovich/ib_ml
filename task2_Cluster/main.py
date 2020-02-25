@@ -1,13 +1,10 @@
-import cProfile
-import pstats
-from pstats import SortKey
-
 from sklearn.datasets import make_moons, make_blobs
 
+from task2_Cluster import agglomerate
 from task2_Cluster.agglomerate import AgglomertiveClustering
 from task2_Cluster.data import visualize_clasters
 from task2_Cluster.dbscan import DBScan
-from task2_Cluster.k_means import KMeans
+from task2_Cluster.k_means import KMeans, Initializations
 
 
 def gen_data(visualize=False):
@@ -21,33 +18,38 @@ def gen_data(visualize=False):
 
 def run_kmeans(X_1, X_2 ):
     kmeans = KMeans(n_clusters=4)
-    kmeans.fit(X_1)
-    labels = kmeans.predict(X_1)
-    visualize_clasters(X_1, labels)
+    for method in (Initializations.random(), Initializations.sample(), Initializations.kmeans_plus_plus()):
+        kmeans.fit(X_1)
+        labels = kmeans.predict(X_1)
+        visualize_clasters(X_1, labels, file_path=f"plot/kmeans_{method.__name__}_1.png")
     kmeans = KMeans(n_clusters=2)
-    kmeans.fit(X_2)
-    labels = kmeans.predict(X_2)
-    visualize_clasters(X_2, labels)
+    for method in (Initializations.random(), Initializations.sample(), Initializations.kmeans_plus_plus()):
+        kmeans.fit(X_2)
+        labels = kmeans.predict(X_2)
+        visualize_clasters(X_2, labels, file_path=f"plot/kmeans_{method.__name__}_2.png")
 
 
 def run_dbscan(X_1, X_2 ):
-    dbscan = DBScan(eps=0.8, min_samples=10)
-    labels = dbscan.fit_predict(X_1)
-    visualize_clasters(X_1, labels)
+    for metric, eps, min_samples in (("euclidean", 0.77, 10), ("manhattan", 0.75, 12), ("chebyshev", 0.75, 12)):
+        dbscan = DBScan(eps=eps, min_samples=min_samples, metric=metric)
+        labels = dbscan.fit_predict(X_1)
+        visualize_clasters(X_1, labels, file_path=f"plot/dbscan_{metric}_1.png")
 
-    dbscan = DBScan(eps=0.15, min_samples=3)
-    labels = dbscan.fit_predict(X_2)
-    visualize_clasters(X_2, labels)
+    for metric, eps, min_samples in (("euclidean", 0.2, 3), ("manhattan", 0.2, 4), ("chebyshev", 0.2, 5)):
+        dbscan = DBScan(eps=eps, min_samples=min_samples, metric=metric)
+        labels = dbscan.fit_predict(X_2)
+        visualize_clasters(X_2, labels, file_path=f"plot/dbscan_{metric}_2.png")
 
 
 def run_agglomerate(X_1, X_2):
-    agg_clustering = AgglomertiveClustering(n_clusters=4)
-    labels = agg_clustering.fit_predict(X_1)
-    visualize_clasters(X_1, labels)
+    for link in agglomerate.average(), agglomerate.complete(), agglomerate.single():
+        agg_clustering = AgglomertiveClustering(n_clusters=4, linkage=link)
+        labels = agg_clustering.fit_predict(X_1)
+        visualize_clasters(X_1, labels, file_path=f"plot/agglomerate_{link.__name__}_1.png")
 
-    agg_clustering = AgglomertiveClustering(n_clusters=2)
-    labels = agg_clustering.fit_predict(X_2)
-    visualize_clasters(X_2, labels)
+        agg_clustering = AgglomertiveClustering(n_clusters=2, linkage=link)
+        labels = agg_clustering.fit_predict(X_2)
+        visualize_clasters(X_2, labels, file_path=f"plot/agglomerate_{link.__name__}_2.png")
 
 
 if __name__ == '__main__':
@@ -55,11 +57,4 @@ if __name__ == '__main__':
 
     #run_kmeans(X_1, X_2)
     #run_dbscan(X_1, X_2)
-
-    pr = cProfile.Profile()
-    pr.enable()
     run_agglomerate(X_1, X_2)
-    pr.disable()
-    sortby = SortKey.CUMULATIVE
-    ps = pstats.Stats(pr).sort_stats(sortby)
-    ps.print_stats()
