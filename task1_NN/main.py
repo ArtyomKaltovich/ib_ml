@@ -22,6 +22,7 @@ def read_cancer_dataset(path_to_csv):
     y = y.apply(lambda elem: 1 if elem == "M" else 0)
     return X, y
 
+
 def read_spam_dataset(path_to_csv):
     return _read(path_to_csv)
 
