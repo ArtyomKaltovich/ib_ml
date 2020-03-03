@@ -5,7 +5,7 @@ from task3_tree.draw import plot_roc_curve, draw_tree
 from task3_tree.tree import DecisionTreeClassifier
 
 X_train, X_test, y_train, y_test = train_test_split(*read_spam_dataset())
-tree = DecisionTreeClassifier(max_depth=6, min_samples_leaf=20)
+tree = DecisionTreeClassifier(max_depth=15, min_samples_leaf=10)
 tree.fit(X_train, y_train)
 print(f"train accuracy={sum(t == p for t, p in zip(tree.predict(X_train), y_train)) / len(y_train)}")
 print(f"test accuracy={sum(t == p for t, p in zip(tree.predict(X_test), y_test)) / len(y_test)}")
