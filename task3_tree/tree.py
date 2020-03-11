@@ -41,7 +41,6 @@ class DecisionTreeClassifier:
         self.root = None
 
     def fit(self, X, y):
-        if isinstance(X, pd.DataFrame):
             mask = np.ones(len(X), dtype=bool)
             X = np.array(X)
             split_column, split_value, split_left, split_right = self.step(X, y, mask)
@@ -50,8 +49,6 @@ class DecisionTreeClassifier:
             stack = [(self.root, split_left, 0, 1), (self.root, split_right, 1, 1)]
             while stack:
                 self._add_node(*stack.pop(), X, y, stack)
-        else:
-            raise NotImplementedError("only pandas DataFrames supported ax X for now")
 
     def _add_node(self, parent, mask, is_right, height, X, y, stack):
         masked = y[mask]

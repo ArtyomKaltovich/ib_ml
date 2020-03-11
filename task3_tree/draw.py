@@ -4,7 +4,7 @@ import numpy as np
 from task3_tree.tree import DecisionTreeNode
 
 
-def plot_roc_curve(y_test, p_pred, save_path=None):
+def plot_roc_curve(y_test, p_pred, save_path=None, show=True):
     positive_samples = sum(1 for y in y_test if y == 0)
     tpr = []
     fpr = []
@@ -12,7 +12,6 @@ def plot_roc_curve(y_test, p_pred, save_path=None):
         y_pred = [(1 if p > w else 0) for p in p_pred]
         tpr.append(sum(1 for yp, yt in zip(y_pred, y_test) if yp == 0 and yt == 0) / positive_samples)
         fpr.append(sum(1 for yp, yt in zip(y_pred, y_test) if yp == 0 and yt != 0) / (len(y_test) - positive_samples))
-    plt.figure(figsize=(7, 7))
     plt.plot(fpr, tpr)
     plt.plot([0, 1], [0, 1], linestyle="--")
     plt.xlabel("False positive rate")
@@ -22,7 +21,7 @@ def plot_roc_curve(y_test, p_pred, save_path=None):
     plt.tight_layout()
     if save_path is not None:
         plt.savefig(save_path)
-    else:
+    elif show:
         plt.show()
 
 
