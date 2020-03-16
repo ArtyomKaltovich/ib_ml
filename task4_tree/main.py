@@ -5,7 +5,10 @@ import random
 import matplotlib.pyplot as plt
 import matplotlib
 import copy
-#from catboost import CatBoostClassifier
+import seaborn as sns
+from catboost import CatBoostClassifier
+from lightgbm import LGBMClassifier
+from time import perf_counter_ns
 
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import roc_auc_score, accuracy_score
@@ -88,6 +91,31 @@ def feature_importance(rfc, X, y, accuracy):
     return result / sum(result)
 
 
+def train_frameworks():
+    X_train, X_test, y_train, y_test = train_test_split(*read_cancer_dataset())
+
+    cat_acc, cat_time = _train_one_framework(CatBoostClassifier, X_test, X_train, y_test, y_train)
+    lgbm_acc, lgbm_time = _train_one_framework(LGBMClassifier, X_test, X_train, y_test, y_train)
+
+    fig, axs = plt.subplots(ncols=2)
+    fig.suptitle("Default params")
+    axs[0].set_ylabel("Accuracy")
+    sns.barplot(x=[f"catboost\n{cat_acc}", f"lightgbm\n{lgbm_acc}"], y=[cat_acc, lgbm_acc], ax=axs[0])
+    sns.barplot(x=[f"catboost\n{cat_time} s.", f"lightgbm\n{lgbm_time} s."], y=[cat_time, lgbm_time], ax=axs[1])
+    plt.show()
+
+
+def _train_one_framework(clf, X_test, X_train, y_test, y_train):
+    start = perf_counter_ns()
+    clf = clf()
+    clf = clf.fit(X_train, y_train)
+    y_pred = clf.predict(X_test)
+    stop = perf_counter_ns()
+    acc = accuracy_score(y_test, y_pred)
+    time = stop - start
+    return acc, time / 1_000_000_000
+
+
 def print_feature_importance():
     X, y = read_spam_dataset()
     rfc = RandomForestClassifier(n_estimators=100, max_depth=10)
@@ -140,4 +168,5 @@ def print_feature_importance():
 if __name__ == '__main__':
     #main()
     #plt.show()
-    print_feature_importance()
+    #print_feature_importance()
+    train_frameworks()
