@@ -55,3 +55,7 @@ def read_notmnist_dataset(path_to_folder=r"../sample_data/notMNIST_small"):
             except OSError:
                 print(f"Can't read {file}")
     return np.array(data).reshape((-1, 28, 28, 1)), np.array(int_target), np.array(labels)
+
+
+def read_blobs2(path_to_csv=r"../sample_data/blobs2.csv"):
+    return _read(path_to_csv)
