@@ -7,6 +7,7 @@ import seaborn as sns
 import numpy as np
 import pandas as pd
 import spacy
+from sklearn.metrics import accuracy_score
 from sklearn.model_selection import train_test_split
 
 from task8_bayes.bag_of_words import BoW, BowStem
@@ -104,7 +105,7 @@ def most_importance(bag_of_words, X, y, plot_file_name):
 
 
 def main(bag_of_words, plots_prefix, X_train, X_test, y_train, y_test):
-    bow = bag_of_words(X_train, voc_limit=500)
+    bow = bag_of_words(X_train, voc_limit=1000)
     X_train_bow = bow.transform(X_train)
     X_test_bow = bow.transform(X_test)
     predictor = NaiveBayes(0.001)
@@ -115,8 +116,8 @@ def main(bag_of_words, plots_prefix, X_train, X_test, y_train, y_test):
 
 if __name__ == '__main__':
     X, y = read_dataset("data/spam")
-    most_importance(BoW, X, y, "plot/most_important_words.png")
-    most_importance(BowStem, X, y, "plot/most_important_stems.png")
-    X_train, X_test, y_train, y_test = train_test_split(X, y, train_size=0.9)
+    #most_importance(BoW, X, y, "plot/most_important_words.png")
+    #most_importance(BowStem, X, y, "plot/most_important_stems.png")
+    X_train, X_test, y_train, y_test = train_test_split(X, y, train_size=0.8)
     main(BoW, "plot/non_stemmed", X_train, X_test, y_train, y_test)
     main(BowStem, "plot/stemmed", X_train, X_test, y_train, y_test)
