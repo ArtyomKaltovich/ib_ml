@@ -25,6 +25,7 @@ class Perceptron:
                 min_n_errors = n_errors
                 optimal_w = w.copy()
         self.w = optimal_w if self.optimal else w
+        print(self.w)
         pass
 
     def predict(self, X):
