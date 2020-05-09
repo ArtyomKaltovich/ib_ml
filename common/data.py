@@ -59,3 +59,7 @@ def read_notmnist_dataset(path_to_folder=r"../sample_data/notMNIST_small"):
 
 def read_blobs2(path_to_csv=r"../sample_data/blobs2.csv"):
     return _read(path_to_csv)
+
+
+def read_tsp(path_to_csv=r"../sample_data/tsp.csv"):
+    return pd.read_csv(path_to_csv, names=["x", "y"], index_col=0)
